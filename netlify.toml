@@ -1,0 +1,14 @@
+# Netlify configuration — static site, no build step, no serverless functions.
+# All live data is fetched client-side from ESPN, so nothing here counts
+# against build minutes or function invocations.
+
+[build]
+  publish = "."
+  command = ""
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

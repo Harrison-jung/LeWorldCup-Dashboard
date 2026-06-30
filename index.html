@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>LeWorldCup 2026 — Bracket Pool</title>
+<meta name="description" content="Live FIFA World Cup 2026 knockout bracket pool — leaderboard, live games, and automatic scoring." />
+<meta name="theme-color" content="#0a1746" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.2.0/dist/tabler-icons.min.css" />
+<link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+<div class="stripes"><i></i><i></i><i></i><i></i><i></i></div>
+<div class="wrap">
+  <h1 class="sr-only">LeWorldCup 2026 bracket pool dashboard</h1>
+
+  <header class="hero">
+    <div class="hero-in">
+      <div class="brand">
+        <div class="crest"><i class="ti ti-trophy"></i></div>
+        <div>
+          <h1 id="poolName">LeWorldCup 2026</h1>
+          <p id="poolSub">Knockout bracket pool</p>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <span id="livePill" class="pill pill-idle"><i class="ti ti-loader"></i> Loading</span>
+        <button id="refreshBtn" class="hbtn" aria-label="Refresh results"><i class="ti ti-refresh"></i></button>
+        <button id="themeBtn" class="hbtn" aria-label="Toggle dark mode"><i class="ti ti-moon"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <div id="metrics" class="metrics"></div>
+
+  <div class="statusbar">
+    <span id="updated" class="updated" aria-live="polite"></span>
+    <div class="followwrap">
+      <i class="ti ti-user-heart" aria-hidden="true"></i>
+      <select id="follow" aria-label="Follow your bracket"></select>
+    </div>
+  </div>
+
+  <div id="podium" class="podium"></div>
+
+  <section class="section">
+    <div class="shead"><i class="ti ti-list-numbers"></i><h2>Leaderboard</h2></div>
+    <div class="board">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Player</th><th>Champion</th>
+            <th class="num hidem">Correct</th><th class="num hidem">Behind</th><th class="num">Points</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboard"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shead"><i class="ti ti-arrows-shuffle"></i><h2>What's at stake</h2></div>
+    <div id="swing" class="swing"></div>
+  </section>
+
+  <section class="section">
+    <div class="shead"><i class="ti ti-ball-football"></i><h2>Games</h2></div>
+    <div id="games" class="games"></div>
+  </section>
+
+  <section class="section">
+    <div class="shead"><i class="ti ti-sitemap"></i><h2>Brackets</h2><span class="scrollhint">swipe →</span></div>
+    <div id="bracketTabs" class="tabs"></div>
+    <div id="bracketView" class="bracketview"></div>
+  </section>
+
+  <footer>
+    <p>Live results via the public ESPN scoreboard · auto-scored in your browser · no server required.<br>
+    <b id="poolName2"></b> &middot; &copy; <span id="year"></span></p>
+  </footer>
+</div>
+
+<script src="assets/config.js"></script>
+<script src="assets/bracket-data.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

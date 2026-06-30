@@ -1,0 +1,11 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+
+# dependencies / logs (none used, but just in case)
+node_modules/
+*.log
+
+# Netlify local state
+.netlify/
