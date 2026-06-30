@@ -40,35 +40,33 @@ Netlify will redeploy on each push.
 
 ## Deploy with Git + Netlify (auto-deploy on every push)
 
-The dashboard was first saved inside a synced workspace that doesn't allow
-deleting files, so the initial `.git` here may carry stale lock files. On your
-Mac (full permissions), reset it cleanly once:
+This folder is already a Git repository with an initial commit on `main` — no
+setup needed.
+
+### Publish without a terminal (GitHub Desktop)
+
+1. Open **GitHub Desktop** -> **File -> Add Local Repository** -> choose this
+   folder (`LeWorldCup-Dashboard`).
+2. Click **Publish repository** (top bar). Sign in if prompted. Done — it's on
+   GitHub.
+
+### Or with a terminal
 
 ```bash
 cd ~/"Claude Projects/LeWorldCup-Dashboard"
-rm -f _probe.txt          # stray empty file the sandbox couldn't remove
-rm -rf .git               # clear the half-initialized repo
-git init -b main
-git add -A
-git commit -m "LeWorldCup 2026 dashboard"
-```
-
-Create an empty repo on GitHub (no README/license), then push:
-
-```bash
 git remote add origin https://github.com/<your-username>/leworldcup-dashboard.git
 git push -u origin main
 ```
 
-Connect Netlify for continuous deploys:
+### Connect Netlify for continuous deploys
 
 1. app.netlify.com -> **Add new site -> Import an existing project -> GitHub**
 2. Pick the repo. **Build command:** leave blank. **Publish directory:** `.`
    (already set in `netlify.toml`). Click **Deploy**.
-3. Every `git push` now auto-deploys in ~30-60 seconds.
+3. Every push now auto-deploys in ~30-60 seconds.
 
-No terminal? Use **GitHub Desktop** to publish the folder, then do the Netlify
-step above. Or skip Git entirely and drag the folder to app.netlify.com/drop.
+Prefer no Git at all? Drag the folder onto app.netlify.com/drop for an instant
+deploy.
 
 ## Editing things (all in `assets/config.js`)
 
