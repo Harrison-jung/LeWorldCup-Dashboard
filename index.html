@@ -53,12 +53,18 @@
         <thead>
           <tr>
             <th>#</th><th>Player</th><th>Champion</th>
-            <th class="num hidem">Correct</th><th class="num hidem">Behind</th><th class="num">Points</th>
+            <th class="num hidem">Correct</th><th class="num hidem">Behind</th>
+            <th class="num" title="Ceiling: best final score still possible if every surviving pick wins">Potential</th><th class="num">Points</th>
           </tr>
         </thead>
         <tbody id="leaderboard"></tbody>
       </table>
     </div>
+  </section>
+
+  <section class="section">
+    <div class="shead"><i class="ti ti-route"></i><h2>Best path to win</h2></div>
+    <div id="paths" class="paths"></div>
   </section>
 
   <section class="section">

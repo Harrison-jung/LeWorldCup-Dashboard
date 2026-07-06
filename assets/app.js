@@ -87,7 +87,8 @@
     return (s || "")
       .toString().toLowerCase()
       .normalize("NFD").replace(/[̀-ͯ]/g, "")
-      .replace(/&/g, "and").replace(/[.'']/g, "")
+      .replace(/&/g, " and ")
+      .replace(/[^a-z0-9]+/g, " ")
       .replace(/\s+/g, " ").trim();
   }
   var CANON = {};
@@ -293,9 +294,11 @@
         "<td>" + flag(r.champion) + " " + esc(r.champion) + "</td>" +
         '<td class="num hidem">' + r.correct + "</td>" +
         '<td class="num muted hidem">' + behind + "</td>" +
+        '<td class="num potential">' + r.maxPossible + "</td>" +
         '<td class="num pts">' + r.points + '<span class="pbar"><span style="width:' + barW + '%"></span></span></td></tr>';
     }).join("");
 
+    renderPaths(rows, res.slotWinner, parsed.eliminated);
     renderSwing(res.slotTeams, res.slotWinner, rows);
 
     // games: live -> upcoming -> recent finals
@@ -464,6 +467,49 @@
         '<span class="ground">' + esc(s.round) + "</span>" +
         (s.flips ? '<span class="flipbadge"><i class="ti ti-bolt"></i> could flip the lead</span>' : "") +
         "</div>" + line(s.oa) + line(s.ob) + "</div>";
+    }).join("");
+  }
+
+  /* ---------- best path to win (per bracket) ---------- */
+  function renderPaths(rows, slotWinner, eliminated) {
+    var box = el("paths");
+    if (!box) return;
+    var byName = {};
+    ENTRANTS.forEach(function (e) { byName[e.name] = e; });
+    box.innerHTML = rows.map(function (r) {
+      var e = byName[r.name];
+      var champ = e.picks.M104;
+      var fin = [e.picks.M101, e.picks.M102];
+      var other = fin[0] === champ ? fin[1] : fin[0];
+      var champOut = !!eliminated[norm(champ)];
+      var otherOut = !!eliminated[norm(other)];
+      var champWon = slotWinner.M104 === champ;
+
+      function tspan(t, out) {
+        return '<span class="pteam' + (out ? " out" : "") + '">' + flag(t) + " " + esc(t) + "</span>";
+      }
+      var need;
+      if (champWon) {
+        need = "🏆 " + tspan(champ) + " won it all — bracket maxed out.";
+      } else if (champOut) {
+        need = "Title hopes gone — " + tspan(champ, true) + " is out.";
+      } else {
+        need = "Needs " + tspan(champ, false) + " to win it all" +
+          (other ? " and " + tspan(other, otherOut) + " to reach the final" : "") + ".";
+      }
+
+      var ff = ["M97", "M98", "M99", "M100"].map(function (m) {
+        var t = e.picks[m];
+        return '<span class="fft' + (eliminated[norm(t)] ? " out" : "") + '">' + flag(t) + " " + esc(t) + "</span>";
+      }).join("");
+
+      var cls = champOut ? "dead" : (r.name === meName ? "me" : "");
+      return '<div class="path-card ' + cls + '">' +
+        '<div class="ph"><span class="pn">' + esc(r.name) +
+        (r.name === meName ? ' <span class="you">YOU</span>' : "") + "</span>" +
+        '<span class="pc">' + flag(champ) + " " + esc(champ) + "</span></div>" +
+        '<div class="pneed">' + need + "</div>" +
+        '<div class="pff"><span class="ffl">Final four:</span> ' + ff + "</div></div>";
     }).join("");
   }
 
