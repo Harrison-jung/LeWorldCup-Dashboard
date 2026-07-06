@@ -73,6 +73,59 @@
     return list;
   }
 
+  /* Monte Carlo: probability each entrant finishes 1st.
+     Locked results are fixed; every undecided match is a 50/50 coin flip. */
+  function computeWinProb(lockedWinner, finalGoals) {
+    var N = 15000, order = B.order, rounds = B.rounds, scoring = C.scoring,
+        r32 = B.r32, feeders = B.feeders, wins = {}, i, m;
+    ENTRANTS.forEach(function (e) { wins[e.name] = 0; });
+    var sw = {}, steams = {};
+    for (var s = 0; s < N; s++) {
+      for (i = 0; i < order.length; i++) {
+        m = order[i];
+        var teams;
+        if (m === "M103") {
+          var t1 = steams.M101, w1 = sw.M101, l1 = (t1 && w1) ? (w1 === t1[0] ? t1[1] : t1[0]) : null;
+          var t2 = steams.M102, w2 = sw.M102, l2 = (t2 && w2) ? (w2 === t2[0] ? t2[1] : t2[0]) : null;
+          teams = [l1, l2];
+        } else if (r32[m]) { teams = r32[m]; }
+        else { var f = feeders[m]; teams = [sw[f[0]], sw[f[1]]]; }
+        steams[m] = teams;
+        if (lockedWinner[m]) sw[m] = lockedWinner[m];
+        else if (teams[0] && teams[1]) sw[m] = (Math.random() < 0.5 ? teams[0] : teams[1]);
+        else sw[m] = teams[0] || teams[1] || null;
+      }
+      var best = -1, tied = null;
+      for (var k = 0; k < ENTRANTS.length; k++) {
+        var e = ENTRANTS[k], pk = e.picks, p = 0;
+        for (i = 0; i < order.length; i++) { m = order[i]; if (pk[m] === sw[m]) p += scoring[rounds[m]] || 0; }
+        if (p > best) { best = p; tied = [e]; }
+        else if (p === best) { tied.push(e); }
+      }
+      if (tied.length === 1) { wins[tied[0].name] += 1; }
+      else if (finalGoals != null) {
+        var bd = Infinity, tt = [], q;
+        for (q = 0; q < tied.length; q++) {
+          var d = Math.abs((tied[q].tiebreak || 0) - finalGoals);
+          if (d < bd) { bd = d; tt = [tied[q]]; } else if (d === bd) tt.push(tied[q]);
+        }
+        for (q = 0; q < tt.length; q++) wins[tt[q].name] += 1 / tt.length;
+      } else {
+        for (var z = 0; z < tied.length; z++) wins[tied[z].name] += 1 / tied.length;
+      }
+    }
+    var prob = {};
+    ENTRANTS.forEach(function (e) { prob[e.name] = wins[e.name] / N; });
+    return prob;
+  }
+
+  function fmtPct(p) {
+    if (p >= 0.995) return "100%";
+    if (p <= 0) return "—";
+    var v = p * 100;
+    return v < 1 ? "<1%" : Math.round(v) + "%";
+  }
+
   /* bracket column orders, laid out so each round lines up with its feeders */
   var COLS = [
     ["Round of 32", ["M74","M77","M73","M75","M83","M84","M81","M82","M76","M78","M79","M80","M86","M88","M85","M87"]],
@@ -277,6 +330,7 @@
     renderPodium(rows);
 
     // leaderboard
+    var winProb = computeWinProb(res.slotWinner, standings.finalGoals);
     var leadPts = leader ? leader.points : 0;
     el("leaderboard").innerHTML = rows.map(function (r) {
       var mv = deltas[r.name] || 0;
@@ -294,7 +348,8 @@
         "<td>" + flag(r.champion) + " " + esc(r.champion) + "</td>" +
         '<td class="num hidem">' + r.correct + "</td>" +
         '<td class="num muted hidem">' + behind + "</td>" +
-        '<td class="num potential">' + r.maxPossible + "</td>" +
+        '<td class="num potential hidem">' + r.maxPossible + "</td>" +
+        '<td class="num winp">' + fmtPct(winProb[r.name]) + "</td>" +
         '<td class="num pts">' + r.points + '<span class="pbar"><span style="width:' + barW + '%"></span></span></td></tr>';
     }).join("");
 

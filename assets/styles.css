@@ -199,6 +199,8 @@ tr.me.leader td{background:linear-gradient(90deg,rgba(255,203,5,.16),rgba(30,84,
 .swg{color:var(--muted);font-size:11.5px;text-align:right}
 
 td.potential{color:var(--muted);font-weight:700;font-variant-numeric:tabular-nums}
+td.winp{color:var(--teal);font-weight:800;font-variant-numeric:tabular-nums}
+.lcap{font-size:11px;color:var(--muted);margin:10px 2px 0;line-height:1.5}
 
 .paths{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
 .path-card{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--royal2);border-radius:14px;box-shadow:var(--shadow);padding:13px 14px}
